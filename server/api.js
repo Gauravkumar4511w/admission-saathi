@@ -134,6 +134,15 @@ function rateLimited(req) {
 }
 
 function readJson(req) {
+  // Vercel functions hand us an already-parsed body.
+  if (req.body !== undefined) {
+    if (typeof req.body === 'object' && req.body !== null) return Promise.resolve(req.body)
+    try {
+      return Promise.resolve(req.body ? JSON.parse(req.body) : {})
+    } catch {
+      return Promise.reject(Object.assign(new Error('Invalid JSON'), { status: 400 }))
+    }
+  }
   return new Promise((resolve, reject) => {
     let body = ''
     req.on('data', (chunk) => {
@@ -199,7 +208,7 @@ export async function handleApi(req, res) {
   try {
     if (!hasCredentials()) {
       send(res, 503, {
-        error: 'AI abhi set nahi hai: server par ANTHROPIC_API_KEY daalein (.env file mein) aur server restart karein.',
+        error: 'AI abhi set nahi hai: ANTHROPIC_API_KEY daalein (.env file mein, ya Vercel/Render ki Environment Variables mein) aur server restart/redeploy karein.',
       })
       return true
     }

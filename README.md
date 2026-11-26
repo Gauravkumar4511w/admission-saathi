@@ -15,7 +15,13 @@ Coaching centres ke liye: parent/student ka sawaal paste karo, AI WhatsApp par b
 
 Production: `npm run build && npm start` (port 3000, ya `PORT` env).
 
-## Deploy (Render)
+## Deploy (Vercel)
+
+`vercel.json` aur `api/` folder (serverless functions) repo mein hain. vercel.com/new → GitHub repo
+**admission-saathi** import karein → Environment Variables mein `ANTHROPIC_API_KEY` daalein → **Deploy**.
+Key baad mein badalni ho to Project → Settings → Environment Variables, phir Redeploy.
+
+## Deploy (Render, doosra option)
 
 `render.yaml` repo mein hai. Render dashboard → **New → Blueprint** → yeh GitHub repo chunein →
 `ANTHROPIC_API_KEY` ki value daalein → **Apply**. Free plan par 15 min koi visit na ho to app so jaata hai;
