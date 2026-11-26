@@ -114,6 +114,25 @@ ${inquiry.note ? `Operator note: ${inquiry.note}` : ''}
 Make it a gentle reminder, not pushy: greet them by name, recall their interest, add one useful reason to act now only if it is supported by the centre details (e.g. batch timing, demo class), and ask a simple yes/no question to restart the chat.`
 }
 
+// Simple per-IP limit so a public deployment can't burn through the API credits.
+const RATE_LIMIT = Number(process.env.AI_RATE_LIMIT_PER_HOUR) || 40
+const hits = new Map()
+function rateLimited(req) {
+  const ip = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || '')
+    .split(',')[0]
+    .trim()
+  const now = Date.now()
+  const recent = (hits.get(ip) || []).filter((t) => now - t < 3_600_000)
+  if (recent.length >= RATE_LIMIT) {
+    hits.set(ip, recent)
+    return true
+  }
+  recent.push(now)
+  hits.set(ip, recent)
+  if (hits.size > 5000) hits.clear()
+  return false
+}
+
 function readJson(req) {
   return new Promise((resolve, reject) => {
     let body = ''
@@ -182,6 +201,10 @@ export async function handleApi(req, res) {
       send(res, 503, {
         error: 'AI abhi set nahi hai: server par ANTHROPIC_API_KEY daalein (.env file mein) aur server restart karein.',
       })
+      return true
+    }
+    if (rateLimited(req)) {
+      send(res, 429, { error: 'Is ghante ki limit poori ho gayi. Thodi der baad try karein.' })
       return true
     }
     const body = await readJson(req)

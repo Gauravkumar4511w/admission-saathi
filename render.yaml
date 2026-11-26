@@ -1,0 +1,16 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: admission-saathi
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: ANTHROPIC_API_KEY
+        sync: false # Render asks for this value when you create the service
+      - key: AI_RATE_LIMIT_PER_HOUR
+        value: "40"

@@ -68,7 +68,12 @@ export default function Reply({ profile, ready, aiReady, onAiConnected, language
         </div>
       </header>
 
-      {aiReady === false && <AiConnect onConnected={onAiConnected} />}
+      {aiReady === false &&
+        (import.meta.env.DEV ? (
+          <AiConnect onConnected={onAiConnected} />
+        ) : (
+          <div className="note warn">AI abhi set nahi hai. Jawab banane ke liye thodi der baad try karein.</div>
+        ))}
       {!ready && (
         <div className="note warn">
           Pehle <a href="#/setup">Business setup</a> mein centre ka naam aur courses daalein, taaki AI sahi fees aur timing bata sake.

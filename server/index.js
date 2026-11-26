@@ -22,6 +22,12 @@ const types = {
 
 createServer(async (req, res) => {
   if (await handleApi(req, res)) return
+  if (req.url.startsWith('/api/')) {
+    res.statusCode = 404
+    res.setHeader('Content-Type', 'application/json')
+    res.end('{"error":"Not found"}')
+    return
+  }
   const path = normalize(decodeURIComponent(req.url.split('?')[0])).replace(/^(\.\.[/\\])+/, '')
   let file = join(dist, path)
   if (!file.startsWith(dist)) file = join(dist, 'index.html')

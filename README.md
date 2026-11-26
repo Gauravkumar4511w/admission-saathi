@@ -15,6 +15,14 @@ Coaching centres ke liye: parent/student ka sawaal paste karo, AI WhatsApp par b
 
 Production: `npm run build && npm start` (port 3000, ya `PORT` env).
 
+## Deploy (Render)
+
+`render.yaml` repo mein hai. Render dashboard → **New → Blueprint** → yeh GitHub repo chunein →
+`ANTHROPIC_API_KEY` ki value daalein → **Apply**. Free plan par 15 min koi visit na ho to app so jaata hai;
+agli visit par ~1 min mein jaagta hai.
+
+Har IP se ek ghante mein max 40 AI requests (`AI_RATE_LIMIT_PER_HOUR`), taaki public link se credits na udein.
+
 ## Kya hai MVP mein
 
 | Page | Kaam |
